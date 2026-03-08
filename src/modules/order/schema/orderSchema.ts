@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 
-export const createOrderRequestSchema = z.object({
+export const createOrderExternalSchema = z.object({
   numeroPedido: z.string(),
   valorTotal: z.number().positive(),
   dataCriacao: z.string(),
@@ -13,6 +13,24 @@ export const createOrderRequestSchema = z.object({
     })
   ),
 });
+
+export const createOrderInternalSchema = z.object({
+  orderId: z.string(),
+  value: z.number().positive(),
+  creationDate: z.string(),
+  items: z.array(
+    z.object({
+      productId: z.number().int().positive(),
+      quantity: z.number().int().positive(),
+      price: z.number().positive(),
+    })
+  ),
+});
+
+export const createOrderRequestSchema = z.union([
+  createOrderExternalSchema,
+  createOrderInternalSchema,
+]);
 
 export const updateOrderSchema = z.object({
   orderId: z.string(),

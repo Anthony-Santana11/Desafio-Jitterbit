@@ -1,11 +1,11 @@
-import { OrderEntity } from "../entity/orderEntity";
 import { OrderRepository } from "../repository/orderRepository";
 import { UpdateOrderInput } from "../schema/orderSchema";
+import { OrderEntity } from "../entity/orderEntity";
 
 export class UpdateOrderUseCase {
   constructor(private orderRepository: OrderRepository) {}
 
-  async execute(dto: UpdateOrderInput): Promise<void> {
+  async execute(dto: UpdateOrderInput): Promise<OrderEntity> {
     const existing = await this.orderRepository.findById(dto.orderId);
     if (!existing) {
       throw new Error("Order not found");
@@ -22,6 +22,6 @@ export class UpdateOrderUseCase {
       })),
     });
 
-    await this.orderRepository.update(updated);
+    return this.orderRepository.update(updated);
   }
 }

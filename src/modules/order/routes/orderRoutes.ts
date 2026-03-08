@@ -7,10 +7,10 @@ import { CreateOrderUseCase } from "../useCases/createOrderUseCases";
 import { UpdateOrderUseCase } from "../useCases/updateOrderUseCase";
 import { DeleteOrderUseCase } from "../useCases/deleteOrderUseCase";
 import { ListOrdersUseCase } from "../useCases/listOrdersUseCase";
-import { InMemoryOrderRepository } from "../repository/inMemoryOrderRepository";
+import { PrismaOrderRepository } from "../repository/prismaOrderRepository";
 
 
-const orderRepository = new InMemoryOrderRepository();
+const orderRepository = new PrismaOrderRepository();
 
 const createOrderUseCase = new CreateOrderUseCase(orderRepository);
 const updateOrderUseCase = new UpdateOrderUseCase(orderRepository);
@@ -25,9 +25,9 @@ const listOrdersController = new ListOrdersController(listOrdersUseCase);
 
 const orderRouter = Router();
 
-orderRouter.get("/list", (req, res) => listOrdersController.handle(req, res));
-orderRouter.post("/", (req, res) => createOrderController.handle(req, res));
-orderRouter.put("/:orderId", (req, res) => updateOrderController.handle(req, res));
-orderRouter.delete("/:orderId", (req, res) => deleteOrderController.handle(req, res));
+orderRouter.get("/order/list", (req, res) => listOrdersController.handle(req, res));
+orderRouter.post("/order", (req, res) => createOrderController.handle(req, res));
+orderRouter.put("/order/:orderId", (req, res) => updateOrderController.handle(req, res));
+orderRouter.delete("/order/:orderId", (req, res) => deleteOrderController.handle(req, res));
 
 export { orderRouter };

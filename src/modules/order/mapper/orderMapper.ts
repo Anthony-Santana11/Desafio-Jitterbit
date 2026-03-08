@@ -1,15 +1,30 @@
 import { OrderEntity } from "../entity/orderEntity";
-import { Order, CreateOrderRequest } from "../schema/orderSchema";
+import { Order, CreateOrderRequest, createOrderInternalSchema } from "../schema/orderSchema";
 
 export class OrderMapper {
-  // mapeado de acordo com o exemplo do pdf do desafio, onde o numeroPedido tem um sufixo que deve ser removido para gerar o orderId
   static fromRequest(raw: CreateOrderRequest): OrderEntity {
-    const orderId = raw.numeroPedido.replace(/-[^-]+$/, "");
+    const internalParsed = createOrderInternalSchema.safeParse(raw);
+    if (internalParsed.success) {
+      const d = internalParsed.data;
+      return OrderEntity.reconstitute({
+        orderId: d.orderId,
+        value: d.value,
+        creationDate: new Date(d.creationDate),
+        items: d.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      });
+    }
+    // external format (numeroPedido has a suffix that must be stripped)
+    const ext = raw as any;
+    const orderId = ext.numeroPedido.replace(/-[^-]+$/, "");
     return OrderEntity.create({
       orderId,
-      value: raw.valorTotal,
-      creationDate: new Date(raw.dataCriacao),
-      items: raw.items.map((item) => ({
+      value: ext.valorTotal,
+      creationDate: new Date(ext.dataCriacao),
+      items: ext.items.map((item: any) => ({
         productId: parseInt(item.idItem, 10),
         quantity: item.quantidadeItem,
         price: item.valorItem,
