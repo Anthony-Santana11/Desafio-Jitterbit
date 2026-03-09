@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors";
 import { OrderRepository } from "../repository/orderRepository";
 import { UpdateOrderInput } from "../schema/orderSchema";
 import { OrderEntity } from "../entity/orderEntity";
@@ -8,7 +9,7 @@ export class UpdateOrderUseCase {
   async execute(dto: UpdateOrderInput): Promise<OrderEntity> {
     const existing = await this.orderRepository.findById(dto.orderId);
     if (!existing) {
-      throw new Error("Order not found");
+      throw new NotFoundError("Order not found");
     }
 
     const updated = OrderEntity.reconstitute({

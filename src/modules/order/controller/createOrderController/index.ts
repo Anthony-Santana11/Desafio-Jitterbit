@@ -2,6 +2,7 @@ import { CreateOrderUseCase } from "../../useCases/createOrderUseCases";
 import { Request, Response } from "express";
 import { createOrderRequestSchema } from "../../schema/orderSchema";
 import { OrderMapper } from "../../mapper/orderMapper";
+import { AppError, ValidationError } from "../../../../shared/errors";
 
 export class CreateOrderController {
   constructor(private createOrderUseCase: CreateOrderUseCase) {}
@@ -10,7 +11,7 @@ export class CreateOrderController {
     try {
       const parsed = createOrderRequestSchema.safeParse(req.body);
       if (!parsed.success) {
-        return res.status(400).json({ message: "Invalid data", errors: parsed.error.issues });
+        throw new ValidationError(parsed.error.issues);
       }
 
       const order = await this.createOrderUseCase.execute(parsed.data);
@@ -19,6 +20,12 @@ export class CreateOrderController {
         data: OrderMapper.toDTO(order),
       });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(error.statusCode).json({ message: error.message, errors: error.issues });
+      }
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       if (error instanceof Error && (error as any).code === "P2002") {
         return res.status(409).json({ message: "Order already exists" });
       }

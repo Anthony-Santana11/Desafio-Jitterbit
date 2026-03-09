@@ -8,6 +8,7 @@ import { UpdateOrderUseCase } from "../useCases/updateOrderUseCase";
 import { DeleteOrderUseCase } from "../useCases/deleteOrderUseCase";
 import { ListOrdersUseCase } from "../useCases/listOrdersUseCase";
 import { PrismaOrderRepository } from "../repository/prismaOrderRepository";
+import { authMiddleware } from "../../../middlewares/authMiddleware";
 
 
 const orderRepository = new PrismaOrderRepository();
@@ -24,6 +25,8 @@ const listOrdersController = new ListOrdersController(listOrdersUseCase);
 
 
 const orderRouter = Router();
+
+orderRouter.use(authMiddleware);
 
 orderRouter.get("/order/list", (req, res) => listOrdersController.handle(req, res));
 orderRouter.post("/order", (req, res) => createOrderController.handle(req, res));
