@@ -331,11 +331,30 @@ const options: swaggerJsdoc.Options = {
             required: true,
             content: {
               "application/json": {
-                schema: {
-                  oneOf: [
-                    { $ref: "#/components/schemas/CreateOrderInternalRequest" },
-                    { $ref: "#/components/schemas/CreateOrderExternalRequest" },
-                  ],
+                schema: { $ref: "#/components/schemas/CreateOrderInternalRequest" },
+                examples: {
+                  interno: {
+                    summary: "Formato interno",
+                    value: {
+                      orderId: "ORD-001",
+                      value: 99.98,
+                      creationDate: "2026-03-08T00:00:00.000Z",
+                      items: [
+                        { productId: 2434, quantity: 2, price: 49.99 },
+                      ],
+                    },
+                  },
+                  externo: {
+                    summary: "Formato externo (Jitterbit)",
+                    value: {
+                      numeroPedido: "PED-001",
+                      valorTotal: 99.98,
+                      dataCriacao: "2026-03-08T00:00:00.000Z",
+                      items: [
+                        { idItem: "2434", quantidadeItem: 2, valorItem: 49.99 },
+                      ],
+                    },
+                  },
                 },
               },
             },
@@ -449,6 +468,14 @@ const options: swaggerJsdoc.Options = {
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/UpdateOrderRequest" },
+                example: {
+                  orderId: "ORD-001",
+                  value: 149.97,
+                  items: [
+                    { productId: 2434, quantity: 1, price: 49.99 },
+                    { productId: 2435, quantity: 2, price: 49.99 },
+                  ],
+                },
               },
             },
           },
