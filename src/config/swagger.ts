@@ -198,7 +198,6 @@ const options: swaggerJsdoc.Options = {
     tags: [
       { name: "Auth", description: "Autenticação de usuários" },
       { name: "Orders", description: "Gerenciamento de pedidos" },
-      { name: "Products", description: "Catálogo de produtos" },
     ],
     paths: {
       "/auth/register": {
@@ -234,6 +233,7 @@ const options: swaggerJsdoc.Options = {
               description: "E-mail já cadastrado",
               content: {
                 "application/json": {
+                  example: { message: "Email already in use" },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
@@ -274,57 +274,7 @@ const options: swaggerJsdoc.Options = {
               description: "Credenciais incorretas",
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/ErrorResponse" },
-                },
-              },
-            },
-          },
-        },
-      },
-      "/product/{id}": {
-        get: {
-          tags: ["Products"],
-          summary: "Buscar produto por ID",
-          security: [{ bearerAuth: [] }],
-          parameters: [
-            {
-              name: "id",
-              in: "path",
-              required: true,
-              schema: { type: "integer" },
-              description: "ID do produto (ex: 2434, 2435, 2436)",
-              example: 2434,
-            },
-          ],
-          responses: {
-            "200": {
-              description: "Produto encontrado",
-              content: {
-                "application/json": {
-                  schema: { $ref: "#/components/schemas/Product" },
-                },
-              },
-            },
-            "400": {
-              description: "ID inválido",
-              content: {
-                "application/json": {
-                  schema: { $ref: "#/components/schemas/ErrorResponse" },
-                },
-              },
-            },
-            "401": {
-              description: "Token ausente ou inválido",
-              content: {
-                "application/json": {
-                  schema: { $ref: "#/components/schemas/ErrorResponse" },
-                },
-              },
-            },
-            "404": {
-              description: "Produto não encontrado",
-              content: {
-                "application/json": {
+                  example: { message: "Invalid credentials" },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
@@ -353,6 +303,16 @@ const options: swaggerJsdoc.Options = {
               description: "Token ausente ou inválido",
               content: {
                 "application/json": {
+                  examples: {
+                    missing: {
+                      summary: "Header ausente",
+                      value: { message: "Missing or invalid authorization header" },
+                    },
+                    expired: {
+                      summary: "Token inválido ou expirado",
+                      value: { message: "Invalid or expired token" },
+                    },
+                  },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
@@ -401,6 +361,16 @@ const options: swaggerJsdoc.Options = {
               description: "Token ausente ou inválido",
               content: {
                 "application/json": {
+                  examples: {
+                    missing: {
+                      summary: "Header ausente",
+                      value: { message: "Missing or invalid authorization header" },
+                    },
+                    expired: {
+                      summary: "Token inválido ou expirado",
+                      value: { message: "Invalid or expired token" },
+                    },
+                  },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
@@ -409,6 +379,58 @@ const options: swaggerJsdoc.Options = {
         },
       },
       "/order/{orderId}": {
+        get: {
+          tags: ["Orders"],
+          summary: "Obter pedido por número do pedido",
+          security: [{ bearerAuth: [] }],
+          parameters: [
+            {
+              name: "orderId",
+              in: "path",
+              required: true,
+              schema: { type: "string" },
+              description: "Número do pedido (ex: v10089016vdb)",
+              example: "v10089016vdb",
+            },
+          ],
+          responses: {
+            "200": {
+              description: "Pedido encontrado",
+              content: {
+                "application/json": {
+                  schema: { $ref: "#/components/schemas/Order" },
+                },
+              },
+            },
+            "401": {
+              description: "Token ausente ou inválido",
+              content: {
+                "application/json": {
+                  examples: {
+                    missing: {
+                      summary: "Header ausente",
+                      value: { message: "Missing or invalid authorization header" },
+                    },
+                    expired: {
+                      summary: "Token inválido ou expirado",
+                      value: { message: "Invalid or expired token" },
+                    },
+                  },
+                  schema: { $ref: "#/components/schemas/ErrorResponse" },
+                },
+              },
+            },
+            "404": {
+              description: "Pedido não encontrado",
+              content: {
+                "application/json": {
+                  example: { message: "Order v10089016vdb not found" },
+                  schema: { $ref: "#/components/schemas/ErrorResponse" },
+                },
+              },
+            },
+          },
+        },
         put: {
           tags: ["Orders"],
           summary: "Atualizar pedido existente",
@@ -451,6 +473,16 @@ const options: swaggerJsdoc.Options = {
               description: "Token ausente ou inválido",
               content: {
                 "application/json": {
+                  examples: {
+                    missing: {
+                      summary: "Header ausente",
+                      value: { message: "Missing or invalid authorization header" },
+                    },
+                    expired: {
+                      summary: "Token inválido ou expirado",
+                      value: { message: "Invalid or expired token" },
+                    },
+                  },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
@@ -459,6 +491,7 @@ const options: swaggerJsdoc.Options = {
               description: "Pedido não encontrado",
               content: {
                 "application/json": {
+                  example: { message: "Order not found" },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
@@ -486,6 +519,16 @@ const options: swaggerJsdoc.Options = {
               description: "Token ausente ou inválido",
               content: {
                 "application/json": {
+                  examples: {
+                    missing: {
+                      summary: "Header ausente",
+                      value: { message: "Missing or invalid authorization header" },
+                    },
+                    expired: {
+                      summary: "Token inválido ou expirado",
+                      value: { message: "Invalid or expired token" },
+                    },
+                  },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
@@ -494,6 +537,7 @@ const options: swaggerJsdoc.Options = {
               description: "Pedido não encontrado",
               content: {
                 "application/json": {
+                  example: { message: "Order not found" },
                   schema: { $ref: "#/components/schemas/ErrorResponse" },
                 },
               },
