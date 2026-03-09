@@ -27,7 +27,7 @@ export function authMiddleware(
   }
 
   const token = authHeader.split(" ")[1];
-  const secret = process.env.JWT_SECRET;
+  const secret = process.env.JWT_SECRET_KEY;
 
   if (!secret) {
     res.status(500).json({ message: "Server misconfiguration" });

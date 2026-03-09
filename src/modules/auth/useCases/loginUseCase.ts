@@ -23,9 +23,9 @@ export class LoginUseCase {
       throw new UnauthorizedError("Invalid credentials");
     }
 
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET_KEY;
     if (!secret) {
-      throw new Error("JWT_SECRET is not defined");
+      throw new Error("JWT_SECRET_KEY is not defined");
     }
 
     const expiresIn = "1d";
