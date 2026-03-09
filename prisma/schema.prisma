@@ -29,13 +29,13 @@ model Order {
 }
 
 model OrderItem {
-  id        Int    @id @default(autoincrement())
   productId Int
   quantity  Int
   price     Float
   orderId   String
   order     Order  @relation(fields: [orderId], references: [orderId], onDelete: Cascade)
 
-  @@map("order_items")
+  @@id([orderId, productId])
+  @@map("items")
 }
 
